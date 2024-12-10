@@ -5,13 +5,14 @@ import axios from "axios";
 import { IoSearch } from "react-icons/io5";
 
 function App() {
+    const API_URL = "http://192.168.1.9:8080";
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         axios
-            .get("http://192.168.1.10:8080/")
+            .get(API_URL)
             .then((response) => {
                 setUsers(response.data);
                 setFilteredUsers(response.data);
@@ -47,38 +48,42 @@ function App() {
                     <input className="input" onChange={handleSearchChange} />
                 </div>
 
-                <table className="users__table">
-                    <thead>
-                        <tr className="table__row">
-                            <th>IMAGE</th>
-                            <th>EMAIL</th>
-                            <th>PASSWORD</th>
-                        </tr>
-                    </thead>
+                {isLoading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <table className="users__table">
+                        <thead>
+                            <tr className="table__row">
+                                <th>IMAGE</th>
+                                <th>EMAIL</th>
+                                <th>PASSWORD</th>
+                            </tr>
+                        </thead>
 
-                    <tbody className="table__body">
-                        {filteredUsers.map((user, index) => {
-                            return (
-                                <tr className="table__row" key={index}>
-                                    <td>
-                                        <img
-                                            loading="lazy"
-                                            src={
-                                                user.image
-                                                    ? `http://192.168.1.10:8080/images/${user.image}`
-                                                    : "https://www.w3schools.com/w3images/avatar2.png"
-                                            }
-                                            alt=""
-                                        />
-                                    </td>
+                        <tbody className="table__body">
+                            {filteredUsers.map((user, index) => {
+                                return (
+                                    <tr className="table__row" key={index}>
+                                        <td>
+                                            <img
+                                                loading="lazy"
+                                                src={
+                                                    user.image
+                                                        ? `${API_URL}/images/${user.image}`
+                                                        : "https://www.w3schools.com/w3images/avatar2.png"
+                                                }
+                                                alt=""
+                                            />
+                                        </td>
 
-                                    <td>{user.email}</td>
-                                    <td>{user.password}</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                        <td>{user.email}</td>
+                                        <td>{user.password}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </>
     );
